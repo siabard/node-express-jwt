@@ -1,4 +1,11 @@
+import { promises as fsPromises } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import employeeData from "../model/employees.json" assert { type: "json" };
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const data = {
   employees: employeeData,
   setEmployees: function (data) {
@@ -10,7 +17,7 @@ const getAllEmployees = (req, res) => {
   res.json(data.employees);
 };
 
-const createNewEmployee = (req, res) => {
+const createNewEmployee = async (req, res) => {
   const newEmployee = {
     id: data.employees?.length
       ? data.employees[data.employees.length - 1].id + 1
@@ -26,10 +33,15 @@ const createNewEmployee = (req, res) => {
   }
 
   data.setEmployees([...data.employees, newEmployee]);
+
+  await fsPromises.writeFile(
+    path.join(__dirname, "..", "model", "employees.json"),
+    JSON.stringify(data.employees)
+  );
   res.status(201).json(data.employees);
 };
 
-const updateEmployee = (req, res) => {
+const updateEmployee = async (req, res) => {
   const employee = data.employees.find(
     (emp) => emp.id === parseInt(req.body.id)
   );
@@ -48,10 +60,15 @@ const updateEmployee = (req, res) => {
   data.setEmployees(
     unsortArray.sort((a, b) => (a.id > b.id ? 1 : a.id < b.id ? -1 : 0))
   );
+
+  await fsPromises.writeFile(
+    path.join(__dirname, "..", "model", "employees.json"),
+    JSON.stringify(data.employees)
+  );
   res.json(data.employees);
 };
 
-const deleteEmployee = (req, res) => {
+const deleteEmployee = async (req, res) => {
   const employee = data.employees.find(
     (emp) => emp.id === parseInt(req.body.id)
   );
@@ -65,6 +82,11 @@ const deleteEmployee = (req, res) => {
     (emp) => emp.id !== parseInt(req.body.id)
   );
   data.setEmployees(filteredArray);
+
+  await fsPromises.writeFile(
+    path.join(__dirname, "..", "model", "employees.json"),
+    JSON.stringify(data.employees)
+  );
   res.json(data.employees);
 };
 

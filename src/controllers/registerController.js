@@ -1,7 +1,8 @@
+import bcrypt from "bcrypt";
 import { promises as fsPromises } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import bcrypt from "bcrypt";
+import ROLES_LIST from "../config/rolesList.js";
 import userData from "../model/users.json" assert { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
@@ -26,7 +27,11 @@ const handleNewUser = async (req, res) => {
 
   try {
     const hashedPwd = await bcrypt.hash(pwd, 10);
-    const newUser = { username: user, password: hashedPwd };
+    const newUser = {
+      username: user,
+      password: hashedPwd,
+      roles: [ROLES_LIST.USER],
+    };
     usersDB.setUsers([...usersDB.users, newUser]);
     await fsPromises.writeFile(
       path.join(__dirname, "..", "model", "users.json"),
