@@ -1,16 +1,21 @@
+import cors from "cors";
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import cors from "cors";
 
-import { logger } from "./middleware/logEvent.mjs";
-import errorHandler from "./middleware/errorHandler.mjs";
 import corsOptions from "./config/corsOptions.mjs";
+import errorHandler from "./middleware/errorHandler.mjs";
+import { logger } from "./middleware/logEvent.mjs";
+import verifyJWT from "./middleware/verifyJWT.js";
 
-import rootRouter from "./routes/root.js";
-import registerRouter from "./routes/register.js";
-import authRouter from "./routes/auth.js";
 import employeeRouter from "./routes/api/employee.js";
+import authRouter from "./routes/auth.js";
+import refreshRouter from "./routes/refresh.js";
+import registerRouter from "./routes/register.js";
+import rootRouter from "./routes/root.js";
+
+import cookieParser from "cookie-parser";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,12 +27,16 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(express.json());
+app.use(cookieParser());
+
 app.use("/", express.static(path.join(__dirname, "..", "/public")));
 
 // routes
 app.use("/", rootRouter);
 app.use("/register", registerRouter);
 app.use("/auth", authRouter);
+app.use("/refresh", refreshRouter);
+app.use(verifyJWT);
 app.use("/employee", employeeRouter);
 
 app.all("*", (req, res) => {

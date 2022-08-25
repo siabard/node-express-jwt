@@ -1,10 +1,10 @@
 import { Router } from "express";
 import {
+  createNewEmployee,
+  deleteEmployee,
   getAllEmployees,
   getEmployee,
-  createNewEmployee,
   updateEmployee,
-  deleteEmployee,
 } from "../../controllers/employeesController.js";
 
 const router = Router();
