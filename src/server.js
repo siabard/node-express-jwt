@@ -7,6 +7,7 @@ import corsOptions from "./config/corsOptions.mjs";
 import errorHandler from "./middleware/errorHandler.mjs";
 import { logger } from "./middleware/logEvent.mjs";
 import verifyJWT from "./middleware/verifyJWT.js";
+import credentials from "./middleware/credentials.js";
 
 import cookieParser from "cookie-parser";
 import employeeRouter from "./routes/api/employee.js";
@@ -23,6 +24,8 @@ const PORT = process.env.PORT || 3500;
 const app = express();
 
 app.use(logger);
+
+app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 
