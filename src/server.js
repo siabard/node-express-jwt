@@ -8,13 +8,13 @@ import errorHandler from "./middleware/errorHandler.mjs";
 import { logger } from "./middleware/logEvent.mjs";
 import verifyJWT from "./middleware/verifyJWT.js";
 
+import cookieParser from "cookie-parser";
 import employeeRouter from "./routes/api/employee.js";
 import authRouter from "./routes/auth.js";
+import logoutHandler from "./routes/logout.js";
 import refreshRouter from "./routes/refresh.js";
 import registerRouter from "./routes/register.js";
 import rootRouter from "./routes/root.js";
-
-import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +36,7 @@ app.use("/", rootRouter);
 app.use("/register", registerRouter);
 app.use("/auth", authRouter);
 app.use("/refresh", refreshRouter);
+app.use("/logout", logoutHandler);
 app.use(verifyJWT);
 app.use("/employee", employeeRouter);
 
