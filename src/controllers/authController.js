@@ -67,7 +67,7 @@ const handleLogin = async (req, res) => {
       secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ accessToken });
+    res.json({ accessToken, roles });
   } else {
     res.sendStatus(401);
   }
