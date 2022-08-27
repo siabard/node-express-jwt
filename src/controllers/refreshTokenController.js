@@ -1,8 +1,5 @@
-import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import userData from "../model/users.json" assert { type: "json" };
-
-dotenv.config();
 
 const usersDB = {
   users: userData,

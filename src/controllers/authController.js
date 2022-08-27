@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import dotenv from "dotenv";
 import { promises as fsPromises } from "fs";
 import jwt from "jsonwebtoken";
 import path from "path";
@@ -8,8 +7,6 @@ import userData from "../model/users.json" assert { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-dotenv.config();
 
 const usersDB = {
   users: userData,

@@ -1,13 +1,14 @@
 import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import path from "path";
+import mongoose from "mongoose";
 import { fileURLToPath } from "url";
-
 import corsOptions from "./config/corsOptions.mjs";
+import credentials from "./middleware/credentials.js";
 import errorHandler from "./middleware/errorHandler.mjs";
 import { logger } from "./middleware/logEvent.mjs";
 import verifyJWT from "./middleware/verifyJWT.js";
-import credentials from "./middleware/credentials.js";
 
 import cookieParser from "cookie-parser";
 import employeeRouter from "./routes/api/employee.js";
@@ -16,6 +17,12 @@ import logoutHandler from "./routes/logout.js";
 import refreshRouter from "./routes/refresh.js";
 import registerRouter from "./routes/register.js";
 import rootRouter from "./routes/root.js";
+import connectDB from "./config/dbConn.js";
+
+dotenv.config();
+
+// connect to db
+connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,4 +63,7 @@ app.all("*", (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+mongoose.connection.once("open", () => {
+  console.log("Connected to MongoDB");
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+});
