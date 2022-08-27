@@ -11,11 +11,12 @@ import { logger } from "./middleware/logEvent.mjs";
 import verifyJWT from "./middleware/verifyJWT.js";
 
 import cookieParser from "cookie-parser";
-import employeeRouter from "./routes/api/employees.js";
+import employeesRouter from "./routes/api/employees.js";
 import authRouter from "./routes/auth.js";
 import logoutHandler from "./routes/logout.js";
 import refreshRouter from "./routes/refresh.js";
 import registerRouter from "./routes/register.js";
+import usersRouter from "./routes/users.js";
 import rootRouter from "./routes/root.js";
 import connectDB from "./config/dbConn.js";
 
@@ -47,8 +48,9 @@ app.use("/register", registerRouter);
 app.use("/auth", authRouter);
 app.use("/refresh", refreshRouter);
 app.use("/logout", logoutHandler);
+app.use("/users", usersRouter);
 app.use(verifyJWT);
-app.use("/employees", employeeRouter);
+app.use("/employees", employeesRouter);
 
 app.all("*", (req, res) => {
   res.status(404);

@@ -3,11 +3,13 @@ import jwt from "jsonwebtoken";
 import User from "../model/User.js";
 
 const handleLogin = async (req, res) => {
+  const cookies = req.cookies;
   const { user, pwd } = req.body;
   if (!user || !pwd)
     return res
       .status(400)
       .json({ message: "Username and password are required" });
+
   const foundUser = await User.findOne({ username: user }).exec();
   if (!foundUser) return res.sendStatus(401);
   const match = await bcrypt.compare(pwd, foundUser.password);
@@ -26,13 +28,33 @@ const handleLogin = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    const refreshToken = jwt.sign(
+    const newRefreshToken = jwt.sign(
       { username: foundUser.username },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
 
-    foundUser.refreshToken = refreshToken;
+    let newRefreshTokenArray = !cookies?.jwt
+      ? foundUser.refreshToken
+      : foundUser.refreshToken.filter((rt) => rt !== cookies.jwt);
+    if (cookies?.jwt) {
+      const refreshToken = cookies.jwt;
+      const foundToken = await User.findOne({ refreshToken }).exec();
+
+      if (!foundToken) {
+        console.log("attempted refresh token reuse at login!");
+        newRefreshTokenArray = [];
+      }
+
+      res.clearCokkie("jwt", {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      });
+    }
+
+    // Saveing refreshToken
+    foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     const result = await foundUser.save();
     console.log(result);
 

@@ -19,7 +19,7 @@ const userSchema = new Schema({
     Editor: Number,
     Admin: Number,
   },
-  refreshToken: String,
+  refreshToken: [String],
 });
 
 export default mongoose.model("User", userSchema);
