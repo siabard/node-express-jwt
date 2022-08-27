@@ -1,23 +1,14 @@
 import jwt from "jsonwebtoken";
-import userData from "../model/users.json" assert { type: "json" };
+import User from "../model/User.js";
 
-const usersDB = {
-  users: userData,
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
-
-const handleRefreshToken = (req, res) => {
+const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
 
   if (!cookies?.jwt) return res.sendStatus(401);
 
   const refreshToken = cookies.jwt;
 
-  const foundUser = usersDB.users.find(
-    (person) => person.refreshToken === refreshToken
-  );
+  const foundUser = await User.findOne({ refreshToken }).exec();
   if (!foundUser) return res.sendStatus(403); //Forbidden
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {

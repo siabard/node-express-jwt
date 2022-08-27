@@ -11,7 +11,7 @@ import { logger } from "./middleware/logEvent.mjs";
 import verifyJWT from "./middleware/verifyJWT.js";
 
 import cookieParser from "cookie-parser";
-import employeeRouter from "./routes/api/employee.js";
+import employeeRouter from "./routes/api/employees.js";
 import authRouter from "./routes/auth.js";
 import logoutHandler from "./routes/logout.js";
 import refreshRouter from "./routes/refresh.js";
@@ -48,7 +48,7 @@ app.use("/auth", authRouter);
 app.use("/refresh", refreshRouter);
 app.use("/logout", logoutHandler);
 app.use(verifyJWT);
-app.use("/employee", employeeRouter);
+app.use("/employees", employeeRouter);
 
 app.all("*", (req, res) => {
   res.status(404);
