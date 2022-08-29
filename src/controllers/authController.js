@@ -46,7 +46,7 @@ const handleLogin = async (req, res) => {
         newRefreshTokenArray = [];
       }
 
-      res.clearCokkie("jwt", {
+      res.clearCookie("jwt", {
         httpOnly: true,
         sameSite: "None",
         secure: true,
@@ -59,7 +59,7 @@ const handleLogin = async (req, res) => {
     console.log(result);
 
     // send access token and refreshToken
-    res.cookie("jwt", refreshToken, {
+    res.cookie("jwt", newRefreshToken, {
       httpOnly: true,
       sameSite: "None",
       secure: true,
