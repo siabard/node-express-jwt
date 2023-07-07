@@ -4,6 +4,7 @@ import User from "../model/User.js";
 
 const handleLogin = async (req, res) => {
   const cookies = req.cookies;
+
   const { user, pwd } = req.body;
   if (!user || !pwd)
     return res
@@ -25,7 +26,7 @@ const handleLogin = async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "15s" }
     );
 
     const newRefreshToken = jwt.sign(
@@ -56,7 +57,6 @@ const handleLogin = async (req, res) => {
     // Saveing refreshToken
     foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     const result = await foundUser.save();
-    console.log(result);
 
     // send access token and refreshToken
     res.cookie("jwt", newRefreshToken, {
